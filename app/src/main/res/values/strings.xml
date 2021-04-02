@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MVP SadaPay</string>
+    <string name="refresh">refresh</string>
+    <string name="clear">clear</string>
 </resources>

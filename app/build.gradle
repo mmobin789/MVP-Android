@@ -31,6 +31,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -43,6 +47,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    //view models
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+
     // room db
     def room_version = "2.2.6"
     implementation "androidx.room:room-runtime:$room_version"
@@ -52,16 +59,20 @@ dependencies {
     // optional - Test helpers
     testImplementation "androidx.room:room-testing:$room_version"
 
-    // networking
+    // networking22
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
     // DI
-// Koin for Android
-    // Koin AndroidX Scope features
-    //  implementation "org.koin:koin-androidx-scope:$koin_version"
     // Koin main features for Android (Scope,ViewModel ...)
     def koin_version = "3.0.1-beta-2"
     implementation "io.insert-koin:koin-android:$koin_version"
+
+    //lottie animations
+    def lottieVersion = "3.6.1"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
+
+    //shimmer UI
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 }

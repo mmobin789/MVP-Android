@@ -1,6 +1,9 @@
 package com.example.myapplication.trending.di
 
 import android.content.Context
+import androidx.room.Room
+import com.example.myapplication.trending.database.AppDatabase
+import com.example.myapplication.trending.network.NetworkConfig
 import com.example.myapplication.trending.viewmodel.TrendingViewModel
 import com.example.myapplication.trending.viewmodel.repositories.TrendingRepository
 import com.example.myapplication.trending.viewmodel.repositories.source.local.LocalSource
@@ -10,12 +13,12 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
-import org.koin.core.logger.Level
 import org.koin.dsl.module
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 object DI {
+
+    private var init = false
 
     /**
      * This initializes Koin DI for the whole application.
@@ -23,17 +26,17 @@ object DI {
      */
     fun start(context: Context) {
 
+        if (init)
+            return
+
         val networkModule = module {
             single {
-                Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("https://api.github.com/")
-                    .build()
+                NetworkConfig.getRetrofit()
             }
-
-            single { get<Retrofit>().create(WebService::class.java) }
-
+            single { NetworkConfig.getTrendingWebService(get()) }
             factory { RemoteSource(get()) }
-            factory { LocalSource() }
+            single { Room.databaseBuilder(get(), AppDatabase::class.java, "appDB").build() }
+            factory { LocalSource(get<AppDatabase>().trendingDao()) }
         }
 
         val trendingModule = module {
@@ -44,10 +47,12 @@ object DI {
 
 
         startKoin {
-            androidLogger(level = Level.DEBUG)
+            androidLogger()
             androidContext(context)
             modules(trendingModule, networkModule)
         }
+
+        init = true
 
 
     }

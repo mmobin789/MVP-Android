@@ -5,6 +5,5 @@ import retrofit2.http.GET
 
 interface WebService  {
     @GET("search/repositories?q=language=+sort:stars")
-    suspend fun getTrendingRepos(): TrendingResponse
-
+    suspend fun getTrendingRepos(): TrendingResponse?
 }
