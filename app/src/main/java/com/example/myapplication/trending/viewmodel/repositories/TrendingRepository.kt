@@ -23,12 +23,12 @@ class TrendingRepository(
      * But APIs total number of items appear to be always 30 so it makes sense to fetch all items in a single call.
      * What is the right time or state to call the API once its data is locally stored ?
      * Many such things are missing from the problem statement.
-     * The function will attempt to load data from API in case of refresh or in 1st invocation and from local DB in subsequent invocations.
+     * This function will attempt to load data from API in case of refresh or in 1st invocation and from local DB in subsequent invocations.
      * There would be a refresh option in the menu to trigger an explicit call.
      * An explicit override is therefore set.
      * @param refresh pass true to update the local DB.
      */
-    fun getTrendingRepos(refresh: Boolean): Flow<List<Trending>> {
+    fun getTrendingRepos(refresh: Boolean): Flow<MutableList<Trending>> {
         return flow {
             var localList = mLocalSource.getTrendingRepos()
             if (refresh || localList.isEmpty()) {

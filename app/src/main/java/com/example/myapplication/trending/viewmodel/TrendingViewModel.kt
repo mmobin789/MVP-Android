@@ -14,10 +14,10 @@ import kotlinx.coroutines.launch
 
 class TrendingViewModel(private val mTrendingRepo: TrendingRepository) : ViewModel() {
 
-    private val mReposData = MutableLiveData<List<Trending>>()
+    private val mReposData = MutableLiveData<MutableList<Trending>>()
     private val mLoadingData = MutableLiveData<LoadState>()
 
-    fun getReposData(): LiveData<List<Trending>> = mReposData
+    fun getReposData(): LiveData<MutableList<Trending>> = mReposData
 
     fun getLoadingState(): LiveData<LoadState> = mLoadingData
 
@@ -36,10 +36,10 @@ class TrendingViewModel(private val mTrendingRepo: TrendingRepository) : ViewMod
     }
 
 
-    fun deleteTrendingRepos() {
+    fun deleteTrendingRepos() {2
         viewModelScope.launch {
             mTrendingRepo.deleteLocalTrendingRepos().collect {
-                mReposData.postValue(emptyList())
+                mReposData.postValue(mutableListOf())
             }
         }
     }

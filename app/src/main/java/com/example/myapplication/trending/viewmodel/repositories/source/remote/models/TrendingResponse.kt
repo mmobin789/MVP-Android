@@ -112,17 +112,20 @@ data class Item(
 /**
  * Converts response model list to local db model list.
  */
-fun List<Item>.toLocalList(): List<Trending> {
-    return map {
-        Trending(
-            id = it.id,
-            username = it.owner?.login,
-            libraryName = it.name,
-            language = it.language,
-            imageUrl = it.owner?.avatarUrl,
-            stars = it.stargazersCount
-        )
+fun List<Item>.toLocalList(): MutableList<Trending> {
+    return MutableList(size) { get(it).run {
+            Trending(
+                id = id,
+                username = owner?.login,
+                libraryName = name,
+                language = language,
+                description = description,
+                imageUrl = owner?.avatarUrl,
+                stars = stargazersCount
+            )
+        }
     }
+
 
 }
 

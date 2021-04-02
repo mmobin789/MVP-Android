@@ -10,10 +10,55 @@
         android:id="@+id/rv"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/adapter_trending" />
+
+    <LinearLayout
+        android:id="@+id/llShimmer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone">
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+        <include layout="@layout/adapter_trending_shimmer" />
+
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

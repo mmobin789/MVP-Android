@@ -2,11 +2,13 @@ package com.example.myapplication.trending.ui
 
 import android.os.Bundle
 import android.view.Menu
-import android.widget.Toast
-
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.R
+import com.example.myapplication.databinding.ActivityTrendingReposBinding
 import com.example.myapplication.trending.di.DI
+import com.example.myapplication.trending.network.LoadState
+import com.example.myapplication.trending.ui.adapter.TrendingAdapter
 import com.example.myapplication.trending.viewmodel.TrendingViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -14,28 +16,48 @@ class TrendingReposActivity : AppCompatActivity() {
 
     private val mViewModel: TrendingViewModel by viewModel()
 
+    private val mTrendingAdapter by lazy {
+        TrendingAdapter(mutableListOf())
+    }
+
+
+    private val mBinding by lazy {
+        ActivityTrendingReposBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_trending_repos)
+        setContentView(mBinding.root)
         DI.start(this)
-
+        mBinding.rv.adapter = mTrendingAdapter
         mViewModel.let {
             it.getTrendingRepos()
 
             it.getLoadingState().observe(this@TrendingReposActivity) { loadState ->
-                Toast.makeText(this@TrendingReposActivity, loadState.name, Toast.LENGTH_SHORT)
-                    .show()
+                when (loadState) {
+                    LoadState.LOADING -> {
+                        mBinding.llShimmer.visibility = View.VISIBLE
+                        mBinding.rv.visibility = View.GONE
+                    }
+                    LoadState.SUCCESS -> {
+                        mBinding.llShimmer.visibility = View.GONE
+                        mBinding.rv.visibility = View.VISIBLE
+                    }
+
+                    else -> {
+                        //todo handle error }
+                    }
+                }
+
+
             }
 
             it.getReposData().observe(this@TrendingReposActivity) { trending ->
-                Toast.makeText(
-                    this@TrendingReposActivity,
-                    trending.size.toString(),
-                    Toast.LENGTH_SHORT
-                ).show()
+                mTrendingAdapter.update(trending)
             }
 
         }
+
 
     }
 
