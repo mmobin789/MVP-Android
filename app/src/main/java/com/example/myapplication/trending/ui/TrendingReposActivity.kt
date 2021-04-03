@@ -13,6 +13,7 @@ import com.example.myapplication.trending.ui.adapter.TrendingAdapter
 import com.example.myapplication.trending.viewmodel.TrendingViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+
 class TrendingReposActivity : AppCompatActivity(), InternetMonitor.OnInternetConnectivityListener {
 
     private val mViewModel: TrendingViewModel by viewModel()
@@ -110,7 +111,9 @@ class TrendingReposActivity : AppCompatActivity(), InternetMonitor.OnInternetCon
         mInternetMonitor.register(this)
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
         menuInflater.inflate(R.menu.menu, menu)
         menu?.getItem(0)?.setOnMenuItemClickListener {
             mViewModel.getTrendingRepos(refresh = true)

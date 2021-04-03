@@ -7,8 +7,4 @@
     <item
         android:title="@string/clear"
         app:showAsAction="never" />
-
-    <item
-        android:title="@string/dark_mode"
-        app:showAsAction="never" />
 </menu>

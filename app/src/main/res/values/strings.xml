@@ -2,7 +2,6 @@
     <string name="app_name">MVP SadaPay</string>
     <string name="refresh">refresh</string>
     <string name="clear">clear</string>
-    <string name="dark_mode">dark mode</string>
     // error strings
     <string name="something_went_wrong">Something went wrong..</string>
     <string name="an_alien_is_probably_blocking_your_signal">An alien is probably blocking your signal.</string>

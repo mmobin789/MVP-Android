@@ -24,8 +24,8 @@ class ErrorView(private val uiErrorBinding: UiErrorBinding) {
 
     }
 
-    private fun setRetryButtonEnabled(enabled: Boolean) {
-        uiErrorBinding.btnRetry.isEnabled = enabled
+    private fun setRetryButtonShown(shown: Boolean) {
+        uiErrorBinding.btnRetry.visibility = if (shown) View.VISIBLE else View.GONE
 
     }
 
@@ -61,7 +61,7 @@ class ErrorView(private val uiErrorBinding: UiErrorBinding) {
     }
 
     fun showNoInternetDialog() {
-        setRetryButtonEnabled(false)
+        setRetryButtonShown(false)
         uiErrorBinding.tvError.setText(R.string.no_internet)
         if (!mNoInternetDialog.isShowing) {
             mNoInternetDialog.show()
@@ -69,7 +69,7 @@ class ErrorView(private val uiErrorBinding: UiErrorBinding) {
     }
 
     fun dismissNoInternetDialog() {
-        setRetryButtonEnabled(true)
+        setRetryButtonShown(true)
         uiErrorBinding.tvError.setText(R.string.internet_available)
         if (mNoInternetDialog.isShowing) {
             mNoInternetDialog.dismiss()
