@@ -7,10 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.trending.network.LoadState
 import com.example.myapplication.trending.viewmodel.repositories.TrendingRepository
 import com.example.myapplication.trending.viewmodel.repositories.source.local.models.Trending
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TrendingViewModel(private val mTrendingRepo: TrendingRepository) : ViewModel() {
 
@@ -36,12 +38,20 @@ class TrendingViewModel(private val mTrendingRepo: TrendingRepository) : ViewMod
         }
     }
 
+    fun onInternet() {
+        mLoadingData.postValue(LoadState.NETWORK_AVAILABLE)
+    }
+
+    fun onInternetLost() {
+        mLoadingData.postValue(LoadState.NETWORK_UNAVAILABLE)
+    }
+
 
     fun deleteTrendingRepos() {
         viewModelScope.launch {
-            mTrendingRepo.deleteLocalTrendingRepos().collect {
-                mReposData.postValue(mutableListOf())
-            }
+            mTrendingRepo.deleteLocalTrendingRepos().collect()
+            mReposData.postValue(mutableListOf())
         }
     }
+
 }

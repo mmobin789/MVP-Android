@@ -7,5 +7,6 @@
     <string name="something_went_wrong">Something went wrong..</string>
     <string name="an_alien_is_probably_blocking_your_signal">An alien is probably blocking your signal.</string>
     <string name="retry">retry</string>
-    <string name="no_data_available">No data available</string>
+    <string name="no_internet">No Internet</string>
+    <string name="internet_available">But Internet is available now you can click retry.</string>
 </resources>
