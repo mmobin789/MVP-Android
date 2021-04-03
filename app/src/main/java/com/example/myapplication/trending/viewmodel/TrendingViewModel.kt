@@ -25,7 +25,8 @@ class TrendingViewModel(private val mTrendingRepo: TrendingRepository) : ViewMod
         viewModelScope.launch {
             mTrendingRepo.getTrendingRepos(refresh).onStart {
                 mLoadingData.postValue(LoadState.LOADING)
-            }.catch {
+            }.catch { e ->
+                e.printStackTrace()
                 mLoadingData.postValue(LoadState.FAILED)
             }.collect {
                 mLoadingData.postValue(LoadState.SUCCESS)
@@ -36,7 +37,7 @@ class TrendingViewModel(private val mTrendingRepo: TrendingRepository) : ViewMod
     }
 
 
-    fun deleteTrendingRepos() {2
+    fun deleteTrendingRepos() {
         viewModelScope.launch {
             mTrendingRepo.deleteLocalTrendingRepos().collect {
                 mReposData.postValue(mutableListOf())

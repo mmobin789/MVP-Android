@@ -75,4 +75,9 @@ dependencies {
 
     //shimmer UI
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+
+    //Glide Image loading
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 }

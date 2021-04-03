@@ -5,8 +5,9 @@ import com.example.myapplication.trending.viewmodel.repositories.source.local.mo
 import com.example.myapplication.trending.viewmodel.repositories.source.remote.RemoteSource
 import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.toLocalList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 /**
  * This repository is used for fetching trending github repos from a data source.
@@ -27,7 +28,9 @@ class TrendingRepository(
      * There would be a refresh option in the menu to trigger an explicit call.
      * An explicit override is therefore set.
      * @param refresh pass true to update the local DB.
+     * @throws NullPointerException for required data if not found.
      */
+    @Throws(NullPointerException::class)
     fun getTrendingRepos(refresh: Boolean): Flow<MutableList<Trending>> {
         return flow {
             var localList = mLocalSource.getTrendingRepos()
@@ -35,6 +38,8 @@ class TrendingRepository(
                 mRemoteSource.getTrendingRepos()?.items?.run {
                     localList = toLocalList()
                     mLocalSource.insertTrendingRepos(localList)
+                } ?: run {
+                    throw NullPointerException("No Data Returned from Trending API")
                 }
             }
             emit(localList)

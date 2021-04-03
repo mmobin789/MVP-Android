@@ -17,6 +17,11 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/adapter_trending" />
 
+    <include
+        android:id="@+id/uiError"
+        layout="@layout/ui_error"
+        tools:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/llShimmer"
         android:layout_width="0dp"

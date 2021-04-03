@@ -25,11 +25,17 @@ class TrendingReposActivity : AppCompatActivity() {
         ActivityTrendingReposBinding.inflate(layoutInflater)
     }
 
+    private val mErrorView by lazy {
+        ErrorView(mBinding.uiError)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(mBinding.root)
         DI.start(this)
+
         mBinding.rv.adapter = mTrendingAdapter
+
         mViewModel.let {
             it.getTrendingRepos()
 
@@ -38,6 +44,7 @@ class TrendingReposActivity : AppCompatActivity() {
                     LoadState.LOADING -> {
                         mBinding.llShimmer.visibility = View.VISIBLE
                         mBinding.rv.visibility = View.GONE
+                        mErrorView.hide()
                     }
                     LoadState.SUCCESS -> {
                         mBinding.llShimmer.visibility = View.GONE
@@ -45,7 +52,8 @@ class TrendingReposActivity : AppCompatActivity() {
                     }
 
                     else -> {
-                        //todo handle error }
+                        mBinding.llShimmer.visibility = View.GONE
+                        mErrorView.showMessage()
                     }
                 }
 
@@ -53,9 +61,16 @@ class TrendingReposActivity : AppCompatActivity() {
             }
 
             it.getReposData().observe(this@TrendingReposActivity) { trending ->
+                if (trending.isEmpty()) {
+                    mErrorView.showMessage(getString(R.string.no_data_available))
+                }
                 mTrendingAdapter.update(trending)
             }
 
+        }
+
+        mErrorView.onRetryClick {
+            mViewModel.getTrendingRepos()
         }
 
 

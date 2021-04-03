@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.AdapterTrendingBinding
+import com.example.myapplication.trending.network.images.loadUrl
 import com.example.myapplication.trending.viewmodel.repositories.source.local.models.Trending
 
 class TrendingAdapter(private val list: MutableList<Trending>) :
@@ -44,6 +45,7 @@ class TrendingAdapter(private val list: MutableList<Trending>) :
             tvLibName.text = trending.libraryName
             tvStars.text = trending.stars.toString()
             tvDesc.text = trending.description
+            ivUser.loadUrl(trending.imageUrl)
 
         }
     }
