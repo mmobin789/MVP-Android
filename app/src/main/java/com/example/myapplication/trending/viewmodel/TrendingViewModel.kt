@@ -4,14 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.trending.network.LoadState
 import com.example.myapplication.trending.ui.adapter.TrendingUI
 import com.example.myapplication.trending.viewmodel.repositories.TrendingRepository
-import com.example.myapplication.trending.viewmodel.repositories.source.local.models.Trending
+import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.TrendingRepositories
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -22,15 +18,15 @@ class TrendingViewModel(private val mTrendingRepo: TrendingRepository) : ViewMod
 
     fun getTrendingRepos(refresh: Boolean = false) {
         viewModelScope.launch {
-            mTrendingRepo.getTrendingRepos(refresh).onStart {
-                mTrendingUIData.postValue(TrendingUI.Loading)
-            }.catch { e ->
-                e.printStackTrace()
-                mTrendingUIData.postValue(TrendingUI.Failed(e.toString()))
-            }.collect {
-                mTrendingUIData.postValue(TrendingUI.Success(it))
+            mTrendingUIData.postValue(TrendingUI.Loading)
+            when (val repos = mTrendingRepo.getTrendingRepos(refresh)) {
+                is TrendingRepositories.Repositories -> {
+                    mTrendingUIData.postValue(TrendingUI.Success(repos.trending))
+                }
+                is TrendingRepositories.Error -> {
+                    mTrendingUIData.postValue(TrendingUI.Failed(repos.error))
+                }
             }
-
         }
     }
 

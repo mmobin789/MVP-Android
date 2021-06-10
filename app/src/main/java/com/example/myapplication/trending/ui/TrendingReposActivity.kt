@@ -81,7 +81,7 @@ class TrendingReposActivity : AppCompatActivity(), InternetMonitor.OnInternetCon
                         mErrorView.hideNoInternetView()
 
                     }
-                    TrendingUI.InternetFailure -> {
+                    TrendingUI.InternetFailure -> {  // for now nothing happens when local data is there and internet is gone this use case has been excluded on purpose.
                         mMenu?.getItem(0)?.isVisible = false  // cannot refresh
                         mErrorView.showNoInternetView()
                     }
@@ -95,7 +95,7 @@ class TrendingReposActivity : AppCompatActivity(), InternetMonitor.OnInternetCon
 
         }
 
-        mErrorView.onRetryClick {
+        mErrorView.setOnRetryClick {
             mViewModel.getTrendingRepos()
         }
 

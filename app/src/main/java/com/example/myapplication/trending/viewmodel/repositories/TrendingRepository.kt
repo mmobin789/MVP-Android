@@ -1,13 +1,11 @@
 package com.example.myapplication.trending.viewmodel.repositories
 
 import com.example.myapplication.trending.viewmodel.repositories.source.local.LocalSource
-import com.example.myapplication.trending.viewmodel.repositories.source.local.models.Trending
 import com.example.myapplication.trending.viewmodel.repositories.source.remote.RemoteSource
+import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.TrendingRepositories
 import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.toLocalList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 /**
  * This repository is used for fetching trending github repos from a data source.
@@ -27,25 +25,26 @@ class TrendingRepository(
      * This function will attempt to load data from API in case of refresh or in 1st invocation and from local DB in subsequent invocations.
      * There would be a refresh option in the menu to trigger an explicit call.
      * An explicit override is therefore set.
-     * @param refresh pass true to update the local DB.
-     * @throws NullPointerException for required data if not found.
+     * @param refresh optionally pass true to update the local DB.
+     * @return API's response or error.
      */
-    @Throws(NullPointerException::class)
-    fun getTrendingRepos(refresh: Boolean): Flow<MutableList<Trending>> {
-        return flow {
-            var localList = mLocalSource.getTrendingRepos()
-            if (refresh || localList.isEmpty()) {
-                mRemoteSource.getTrendingRepos()?.items?.run {
-                    localList = toLocalList()
-                    mLocalSource.insertTrendingRepos(localList)
-                } ?: run {
-                    throw NullPointerException("No Data Returned from Trending API")
+    suspend fun getTrendingRepos(refresh: Boolean = false): TrendingRepositories =
+        withContext(Dispatchers.IO) {
+            try {
+                var localList = mLocalSource.getTrendingRepos()
+                if (refresh || localList.isEmpty()) {
+                    mRemoteSource.getTrendingRepos()?.items?.run {
+                        localList = toLocalList()
+                        mLocalSource.insertTrendingRepos(localList)
+                        TrendingRepositories.Repositories(localList)
+                    }
                 }
+                TrendingRepositories.Repositories(localList)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                TrendingRepositories.Error(e.toString())
             }
-            emit(localList)
-        }.flowOn(Dispatchers.IO)
-
-    }
+        }
 
 
     fun deleteLocalTrendingRepos() = mLocalSource.clear()

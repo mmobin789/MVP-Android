@@ -77,7 +77,7 @@ class ErrorView(private val uiErrorBinding: UiErrorBinding) {
     }
 
 
-    fun onRetryClick(onRetryClick: () -> Unit) {
+    fun setOnRetryClick(onRetryClick: () -> Unit) {
         mOnRetryClick = onRetryClick
     }
 }

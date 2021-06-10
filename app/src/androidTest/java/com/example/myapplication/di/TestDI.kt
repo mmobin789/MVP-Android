@@ -13,7 +13,7 @@ object TestDI {
     private var init = false
 
     /**
-     * This initializes Koin DI for the whole application.
+     * This initializes Koin DI for the whole test application.
      * This must be only called once.
      */
     fun start(context: Context) {
