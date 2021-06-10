@@ -36,8 +36,8 @@ class TrendingRepository(
                     mRemoteSource.getTrendingRepos()?.items?.run {
                         localList = toLocalList()
                         mLocalSource.insertTrendingRepos(localList)
-                        TrendingRepositories.Repositories(localList)
                     }
+
                 }
                 TrendingRepositories.Repositories(localList)
             } catch (e: Exception) {
