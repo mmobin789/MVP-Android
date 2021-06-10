@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.trending.network.LoadState
+import com.example.myapplication.trending.ui.adapter.TrendingUI
 import com.example.myapplication.trending.viewmodel.repositories.TrendingRepository
 import com.example.myapplication.trending.viewmodel.repositories.source.local.models.Trending
 import kotlinx.coroutines.Dispatchers
@@ -15,42 +16,39 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class TrendingViewModel(private val mTrendingRepo: TrendingRepository) : ViewModel() {
+    private val mTrendingUIData = MutableLiveData<TrendingUI>()
 
-    private val mReposData = MutableLiveData<MutableList<Trending>>()
-    private val mLoadingData = MutableLiveData<LoadState>()
-
-    fun getReposData(): LiveData<MutableList<Trending>> = mReposData
-
-    fun getLoadingState(): LiveData<LoadState> = mLoadingData
+    fun getTrendingUIData(): LiveData<TrendingUI> = mTrendingUIData
 
     fun getTrendingRepos(refresh: Boolean = false) {
         viewModelScope.launch {
             mTrendingRepo.getTrendingRepos(refresh).onStart {
-                mLoadingData.postValue(LoadState.LOADING)
+                mTrendingUIData.postValue(TrendingUI.Loading)
             }.catch { e ->
                 e.printStackTrace()
-                mLoadingData.postValue(LoadState.FAILED)
+                mTrendingUIData.postValue(TrendingUI.Failed(e.toString()))
             }.collect {
-                mLoadingData.postValue(LoadState.SUCCESS)
-                mReposData.postValue(it)
+                mTrendingUIData.postValue(TrendingUI.Success(it))
             }
 
         }
     }
 
     fun onInternet() {
-        mLoadingData.postValue(LoadState.NETWORK_AVAILABLE)
+        mTrendingUIData.postValue(TrendingUI.InternetRestore)
     }
 
     fun onInternetLost() {
-        mLoadingData.postValue(LoadState.NETWORK_UNAVAILABLE)
+        mTrendingUIData.postValue(TrendingUI.InternetFailure)
     }
 
 
     fun deleteTrendingRepos() {
         viewModelScope.launch {
-            mTrendingRepo.deleteLocalTrendingRepos().collect()
-            mReposData.postValue(mutableListOf())
+            withContext(Dispatchers.IO) {
+                mTrendingRepo.deleteLocalTrendingRepos()
+            }
+            mTrendingUIData.postValue(TrendingUI.Clear)
         }
     }
 

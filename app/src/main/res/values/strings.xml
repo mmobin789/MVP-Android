@@ -8,4 +8,5 @@
     <string name="retry">retry</string>
     <string name="no_internet">No Internet</string>
     <string name="internet_available">But Internet is available now you can click retry.</string>
+    <string name="db_cleared">The database has been cleared by you click on retry to download data.</string>
 </resources>

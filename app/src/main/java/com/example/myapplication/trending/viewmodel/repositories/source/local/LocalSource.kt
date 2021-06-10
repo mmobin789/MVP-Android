@@ -6,5 +6,5 @@ import com.example.myapplication.trending.viewmodel.repositories.source.local.mo
 class LocalSource(private val trendingDAO: TrendingDAO) {
     fun getTrendingRepos() = trendingDAO.getTrendingRepos()
     fun clear() = trendingDAO.delete()
-    suspend fun insertTrendingRepos(repos: List<Trending>) = trendingDAO.insertAll(repos)
+    fun insertTrendingRepos(repos: List<Trending>) = trendingDAO.insertAll(repos)
 }

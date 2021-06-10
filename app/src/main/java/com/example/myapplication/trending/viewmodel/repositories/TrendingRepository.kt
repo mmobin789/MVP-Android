@@ -48,9 +48,5 @@ class TrendingRepository(
     }
 
 
-    fun deleteLocalTrendingRepos(): Flow<Unit> {
-        return flow {
-            emit(mLocalSource.clear())
-        }.flowOn(Dispatchers.IO)
-    }
+    fun deleteLocalTrendingRepos() = mLocalSource.clear()
 }

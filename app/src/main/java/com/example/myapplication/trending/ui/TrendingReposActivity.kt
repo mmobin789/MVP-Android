@@ -8,8 +8,8 @@ import com.example.myapplication.R
 import com.example.myapplication.databinding.ActivityTrendingReposBinding
 import com.example.myapplication.trending.di.DI
 import com.example.myapplication.trending.network.InternetMonitor
-import com.example.myapplication.trending.network.LoadState
 import com.example.myapplication.trending.ui.adapter.TrendingAdapter
+import com.example.myapplication.trending.ui.adapter.TrendingUI
 import com.example.myapplication.trending.viewmodel.TrendingViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -55,41 +55,42 @@ class TrendingReposActivity : AppCompatActivity(), InternetMonitor.OnInternetCon
         mViewModel.let {
             it.getTrendingRepos()
 
-            it.getLoadingState().observe(this@TrendingReposActivity) { loadState ->
-                when (loadState) {
-                    LoadState.LOADING -> {
+            it.getTrendingUIData().observe(this) { uiData ->
+                when (uiData) {
+                    TrendingUI.Loading -> {
                         mBinding.llShimmer.visibility = View.VISIBLE
                         mBinding.rv.visibility = View.GONE
                         mErrorView.hide()
                     }
-                    LoadState.SUCCESS -> {
+                    is TrendingUI.Success -> {
                         mBinding.llShimmer.visibility = View.GONE
                         mBinding.rv.visibility = View.VISIBLE
+                        val trending = uiData.trending
+
+                        if (trending.isEmpty()) {
+                            mErrorView.showMessage()
+                        }
+                        mTrendingAdapter.update(trending)
                     }
-                    LoadState.FAILED -> {
+                    is TrendingUI.Failed -> {
                         mBinding.llShimmer.visibility = View.GONE
-                        mErrorView.showMessage()
+                        mErrorView.showMessage(uiData.error)
                     }
-                    LoadState.NETWORK_AVAILABLE -> {
+                    TrendingUI.InternetRestore -> {
                         mMenu?.getItem(0)?.isVisible = true   // can refresh
-                        mErrorView.dismissNoInternetDialog()
+                        mErrorView.hideNoInternetView()
 
                     }
-                    // internet gone
-                    else -> {
+                    TrendingUI.InternetFailure -> {
                         mMenu?.getItem(0)?.isVisible = false  // cannot refresh
-                        mErrorView.showNoInternetDialog()
+                        mErrorView.showNoInternetView()
+                    }
+                    TrendingUI.Clear -> {
+                        mErrorView.showMessage(getString(R.string.db_cleared))
                     }
                 }
 
 
-            }
-
-            it.getReposData().observe(this@TrendingReposActivity) { trending ->
-                if (trending.isEmpty()) {
-                    mErrorView.showMessage()
-                }
-                mTrendingAdapter.update(trending)
             }
 
         }

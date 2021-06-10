@@ -1,6 +1,5 @@
 package com.example.myapplication.trending.ui
 
-import android.app.AlertDialog
 import android.view.View
 import com.airbnb.lottie.LottieDrawable
 import com.example.myapplication.R
@@ -13,7 +12,7 @@ class ErrorView(private val uiErrorBinding: UiErrorBinding) {
     private val mContext = uiErrorBinding.root.context
 
 
-    private val mNoInternetDialog by lazy {
+  /*  private val mNoInternetDialog by lazy {
         AlertDialog.Builder(mContext).setMessage(R.string.no_internet).setPositiveButton(
             android.R.string.ok
         ) { dialog, _ ->
@@ -22,7 +21,7 @@ class ErrorView(private val uiErrorBinding: UiErrorBinding) {
         }
             .create()
 
-    }
+    }*/
 
     private fun setRetryButtonShown(shown: Boolean) {
         uiErrorBinding.btnRetry.visibility = if (shown) View.VISIBLE else View.GONE
@@ -36,6 +35,7 @@ class ErrorView(private val uiErrorBinding: UiErrorBinding) {
         }
 
         uiErrorBinding.ivL.repeatCount = LottieDrawable.INFINITE
+
     }
 
 
@@ -60,20 +60,20 @@ class ErrorView(private val uiErrorBinding: UiErrorBinding) {
 
     }
 
-    fun showNoInternetDialog() {
+    fun showNoInternetView() {
         setRetryButtonShown(false)
         uiErrorBinding.tvError.setText(R.string.no_internet)
-        if (!mNoInternetDialog.isShowing) {
+       /* if (!mNoInternetDialog.isShowing) {
             mNoInternetDialog.show()
-        }
+        }*/
     }
 
-    fun dismissNoInternetDialog() {
+    fun hideNoInternetView() {
         setRetryButtonShown(true)
         uiErrorBinding.tvError.setText(R.string.internet_available)
-        if (mNoInternetDialog.isShowing) {
+       /* if (mNoInternetDialog.isShowing) {
             mNoInternetDialog.dismiss()
-        }
+        }*/
     }
 
 
