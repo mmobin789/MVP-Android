@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.trending.ui.adapter.TrendingUI
 import com.example.myapplication.trending.viewmodel.repositories.TrendingRepository
-import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.TrendingRepositories
+import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.TrendingRepoAPI
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,10 +20,10 @@ class TrendingViewModel(private val mTrendingRepo: TrendingRepository) : ViewMod
         viewModelScope.launch {
             mTrendingUIData.postValue(TrendingUI.Loading)
             when (val repos = mTrendingRepo.getTrendingRepos(refresh)) {
-                is TrendingRepositories.Repositories -> {
+                is TrendingRepoAPI.Repositories -> {
                     mTrendingUIData.postValue(TrendingUI.Success(repos.trending))
                 }
-                is TrendingRepositories.Error -> {
+                is TrendingRepoAPI.Error -> {
                     mTrendingUIData.postValue(TrendingUI.Failed(repos.error))
                 }
             }

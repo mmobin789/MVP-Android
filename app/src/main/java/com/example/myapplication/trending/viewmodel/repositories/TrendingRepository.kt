@@ -2,7 +2,7 @@ package com.example.myapplication.trending.viewmodel.repositories
 
 import com.example.myapplication.trending.viewmodel.repositories.source.local.LocalSource
 import com.example.myapplication.trending.viewmodel.repositories.source.remote.RemoteSource
-import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.TrendingRepositories
+import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.TrendingRepoAPI
 import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.toLocalList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,7 +28,7 @@ class TrendingRepository(
      * @param refresh optionally pass true to update the local DB.
      * @return API's response or error.
      */
-    suspend fun getTrendingRepos(refresh: Boolean = false): TrendingRepositories =
+    suspend fun getTrendingRepos(refresh: Boolean = false): TrendingRepoAPI =
         withContext(Dispatchers.IO) {
             try {
                 var localList = mLocalSource.getTrendingRepos()
@@ -39,10 +39,10 @@ class TrendingRepository(
                     }
 
                 }
-                TrendingRepositories.Repositories(localList)
+                TrendingRepoAPI.Repositories(localList)
             } catch (e: Exception) {
                 e.printStackTrace()
-                TrendingRepositories.Error(e.toString())
+                TrendingRepoAPI.Error(e.toString())
             }
         }
 

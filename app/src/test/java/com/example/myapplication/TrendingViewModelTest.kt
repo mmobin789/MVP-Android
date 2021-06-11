@@ -6,7 +6,7 @@ import com.example.myapplication.trending.ui.adapter.TrendingUI
 import com.example.myapplication.trending.viewmodel.TrendingViewModel
 import com.example.myapplication.trending.viewmodel.repositories.TrendingRepository
 import com.example.myapplication.trending.viewmodel.repositories.source.local.models.Trending
-import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.TrendingRepositories
+import com.example.myapplication.trending.viewmodel.repositories.source.remote.models.TrendingRepoAPI
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -44,7 +44,7 @@ class TrendingViewModelTest {
     @Test
     fun getTrendingRepos() {
         val trendingList = mockk<MutableList<Trending>>()
-        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepositories.Repositories(
+        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepoAPI.Repositories(
             trendingList
         )
         every { trendingList.isEmpty() } returns false
@@ -68,7 +68,7 @@ class TrendingViewModelTest {
 
     @Test
     fun testTrendingUISuccess() {
-        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepositories.Repositories(
+        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepoAPI.Repositories(
             mockk()
         )
         val trendingLiveData = mTrendingViewModel.getTrendingUIData()
@@ -81,7 +81,7 @@ class TrendingViewModelTest {
 
     @Test
     fun testTrendingUIFailedByTrendingAPI() {
-        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepositories.Error(
+        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepoAPI.Error(
             "Generic API Failure"
         )
         val trendingLiveData = mTrendingViewModel.getTrendingUIData()
@@ -94,7 +94,7 @@ class TrendingViewModelTest {
 
     @Test
     fun testTrendingUIFailedByInternetFailInApiCall() {
-        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepositories.Error(
+        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepoAPI.Error(
             UnknownHostException("Base URL not found").toString()
         )
         val trendingLiveData = mTrendingViewModel.getTrendingUIData()

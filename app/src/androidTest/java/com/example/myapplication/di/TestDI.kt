@@ -3,6 +3,7 @@ package com.example.myapplication.di
 import android.content.Context
 import androidx.room.Room
 import com.example.myapplication.trending.database.AppDatabase
+import com.example.myapplication.trending.viewmodel.repositories.source.local.LocalSource
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -21,8 +22,9 @@ object TestDI {
             return
 
         val dbModule = module {
-            factory { Room.inMemoryDatabaseBuilder(get(), AppDatabase::class.java).build() }
-            factory { get<AppDatabase>().trendingDao() }
+            single { Room.inMemoryDatabaseBuilder(get(), AppDatabase::class.java).build() }
+            single { get<AppDatabase>().trendingDao() }
+            factory { LocalSource(get()) }
         }
 
 
