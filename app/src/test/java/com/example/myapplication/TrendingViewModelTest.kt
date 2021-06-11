@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.myapplication.trending.ui.adapter.TrendingUI
 import com.example.myapplication.trending.viewmodel.TrendingViewModel
@@ -42,7 +43,17 @@ class TrendingViewModelTest {
     }
 
     @Test
-    fun getTrendingRepos() {
+    fun getTrendingReposRemote() {
+        val trendingList = mockk<MutableList<Trending>>()
+        coEvery { mTrendingRepository.getTrendingRepos(true) } returns TrendingRepoAPI.Repositories(
+            trendingList
+        )
+        every { trendingList.isEmpty() } returns false
+        Assert.assertTrue(trendingList.isNotEmpty())
+    }
+
+    @Test
+    fun getTrendingReposLocal() {
         val trendingList = mockk<MutableList<Trending>>()
         coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepoAPI.Repositories(
             trendingList
@@ -57,7 +68,7 @@ class TrendingViewModelTest {
         val trendingLiveData = mTrendingViewModel.getTrendingUIData()
         var trendingUI: TrendingUI? = null
         val observer = Observer<TrendingUI> {
-            if (trendingUI == null)
+            if (trendingUI == null)  // to catch the 1st state which is loading.
                 trendingUI = it
         }
         trendingLiveData.observeForever(observer)
@@ -124,4 +135,16 @@ class TrendingViewModelTest {
         trendingLiveData.removeObserver(observer)
         Assert.assertTrue(trendingLiveData.value == TrendingUI.InternetRestore)
     }
+
+    @Test
+    fun testTrendingUIDbClear() {
+        val trendingLiveData = mockk<LiveData<TrendingUI>>()
+        val mTrendingViewModel = mockk<TrendingViewModel>()
+        every { mTrendingViewModel.deleteTrendingRepos() } returns Unit
+        every { mTrendingViewModel.getTrendingUIData() } returns trendingLiveData
+        every { trendingLiveData.value } returns TrendingUI.Clear
+        Assert.assertTrue(trendingLiveData.value == TrendingUI.Clear)
+    }
+
+
 }

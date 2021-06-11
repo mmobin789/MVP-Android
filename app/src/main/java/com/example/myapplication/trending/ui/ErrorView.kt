@@ -60,6 +60,11 @@ class ErrorView(private val uiErrorBinding: UiErrorBinding) {
 
     }
 
+    /**
+     * This is left non-intrusive on purpose. UI shouldn't be blocked in case of no internet.
+     * Showing internet view is optional it may appear if the UI is already there else not.
+     */
+
     fun showNoInternetView() {
         setRetryButtonShown(false)
         uiErrorBinding.tvError.setText(R.string.no_internet)

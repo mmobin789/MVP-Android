@@ -26,11 +26,11 @@ class TrendingReposActivity : AppCompatActivity(), InternetMonitor.OnInternetCon
     }
 
 
-    private val mBinding by lazy {
+     val mBinding by lazy {
         ActivityTrendingReposBinding.inflate(layoutInflater)
     }
 
-    private val mErrorView by lazy {
+    val mErrorView by lazy {
         ErrorView(mBinding.uiError)
     }
 
