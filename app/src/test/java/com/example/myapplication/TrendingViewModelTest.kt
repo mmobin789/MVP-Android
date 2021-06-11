@@ -17,6 +17,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.net.UnknownHostException
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -68,7 +69,8 @@ class TrendingViewModelTest {
     @Test
     fun testTrendingUISuccess() {
         coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepositories.Repositories(
-            mockk())
+            mockk()
+        )
         val trendingLiveData = mTrendingViewModel.getTrendingUIData()
         val observer = Observer<TrendingUI> {}
         trendingLiveData.observeForever(observer)
@@ -79,12 +81,47 @@ class TrendingViewModelTest {
 
     @Test
     fun testTrendingUIFailedByTrendingAPI() {
-        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepositories.Error(NullPointerException().toString())
+        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepositories.Error(
+            "Generic API Failure"
+        )
         val trendingLiveData = mTrendingViewModel.getTrendingUIData()
         val observer = Observer<TrendingUI> {}
         trendingLiveData.observeForever(observer)
         mTrendingViewModel.getTrendingRepos()
         trendingLiveData.removeObserver(observer)
         Assert.assertTrue(trendingLiveData.value is TrendingUI.Failed)
+    }
+
+    @Test
+    fun testTrendingUIFailedByInternetFailInApiCall() {
+        coEvery { mTrendingRepository.getTrendingRepos() } returns TrendingRepositories.Error(
+            UnknownHostException("Base URL not found").toString()
+        )
+        val trendingLiveData = mTrendingViewModel.getTrendingUIData()
+        val observer = Observer<TrendingUI> {}
+        trendingLiveData.observeForever(observer)
+        mTrendingViewModel.getTrendingRepos()
+        trendingLiveData.removeObserver(observer)
+        Assert.assertTrue(trendingLiveData.value is TrendingUI.Failed)
+    }
+
+    @Test
+    fun testTrendingUIInternetFailure() {
+        val trendingLiveData = mTrendingViewModel.getTrendingUIData()
+        val observer = Observer<TrendingUI> {}
+        trendingLiveData.observeForever(observer)
+        mTrendingViewModel.onInternetLost()
+        trendingLiveData.removeObserver(observer)
+        Assert.assertTrue(trendingLiveData.value == TrendingUI.InternetFailure)
+    }
+
+    @Test
+    fun testTrendingUIInternetRestore() {
+        val trendingLiveData = mTrendingViewModel.getTrendingUIData()
+        val observer = Observer<TrendingUI> {}
+        trendingLiveData.observeForever(observer)
+        mTrendingViewModel.onInternet()
+        trendingLiveData.removeObserver(observer)
+        Assert.assertTrue(trendingLiveData.value == TrendingUI.InternetRestore)
     }
 }
